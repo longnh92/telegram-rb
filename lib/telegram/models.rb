@@ -271,7 +271,7 @@ module Telegram
     # @return [TelegramContact] The contact who sent this message
     attr_reader :user
 
-    # @return [String] 
+    # @return [String]
     attr_reader :raw_target
 
     # @return [String] Content type
@@ -289,7 +289,7 @@ module Telegram
     # @since [0.1.0]
     def initialize(client, event)
       @event = event
-      
+
       @id = event.id
       @raw = event.message.text
       @time = event.time
@@ -301,11 +301,15 @@ module Telegram
       @user = @sender = event.message.from
       @receiver = event.message.to
 
-      @target = case @receiver.type
-      when 'user'
+      @target = if @receiver.nil?
         @sender
-      when 'chat', 'encr_chat'
-        @receiver
+      else
+        case @receiver.type
+        when 'user'
+          @sender
+        when 'chat', 'encr_chat'
+          @receiver
+        end
       end
     end
 
